@@ -4,16 +4,13 @@ UPK Reader & Matcher is a small reverse-engineering and verification toolkit
 for reading a UPK-format flight recorder data file and comparing candidate raw
 word locations against a supplied CSV sample table.
 
-The project is designed for two related goals:
+The project is designed for three related goals:
 
-- read and inspect a `12minute.upk` file whose low-level data structure has
-  already been identified;
-- search for the likely UPK word or bit specified of each CSV parameter by
-  comparing raw UPK samples with the reference CSV values.
+- Read, inspect, and explore a `12minute.upk` file;
+- Locate the most likely UPK word or bit position corresponding to each CSV parameter   through search methods, and provide a list of candidates;
+- Use charts to visually present the relationship between the source data from the UPK and the given CSV, locating and verifying the origin.
 
-The web matcher is also useful as a manual verification interface: it plots the
-CSV sample series together with raw UPK candidate values so that correlations,
-phase alignment, and discrete bit behavior can be visually inspected.
+The web interface will plot both the CSV sample sequence and the raw UPK candidate values on the same chart, making it easy to check correlation, sampling phase alignment, and discrete bit states.
 
 ## Data Structure
 
@@ -116,7 +113,7 @@ Clone the repository and enter the project directory:
 
 ```text
 git clone https://github.com/igttttma/UPK_reader-matcher
-cd "UPK_reader&matcher"
+cd UPK_reader-matcher
 ```
 
 Place the required data files in the project root:
@@ -166,13 +163,13 @@ http://127.0.0.1:8765/
 UPK Reader & Matcher 是一个用于读取 UPK 格式飞行记录数据、并与给定 CSV
 样本表进行交叉比对的小型逆向与真实性验证工具。
 
-本项目有两个相关目标：
+本项目有三个相关目标：
 
-- 读取并检查一个底层数据结构已经探明的 `12minute.upk` 文件；
-- 通过搜索方法定位每个 CSV 参数最可能对应的 UPK word 或 bit 位置。
+- 读取、检查并探索一个 `12minute.upk` 文件；
+- 通过搜索方法定位每个 CSV 参数最可能对应的 UPK word 或 bit 位置，给出候选列表；
+- 使用图表直观展现来自upk的源数据与给定CSV关系，定位并验证出处。
 
-Web 匹配器也可以作为手动验证界面使用：它会把 CSV 样本序列和 UPK 原始候选值
-画在同一张图上，方便检查相关性、采样相位对齐和离散 bit 状态。
+Web 会把 CSV 样本序列和 UPK 原始候选值画在同一张图上，方便检查相关性、采样相位对齐和离散 bit 状态。
 
 ## 数据结构
 
@@ -272,7 +269,7 @@ clone 仓库并进入项目目录：
 
 ```text
 git clone https://github.com/igttttma/UPK_reader-matcher
-cd "UPK_reader&matcher"
+cd UPK_reader-matcher
 ```
 
 把所需数据文件放到项目根目录：
