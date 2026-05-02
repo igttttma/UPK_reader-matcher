@@ -1,0 +1,156 @@
+,Validated Parameter Name,Units,Description
+1,Absolute Roll Rate,deg/s,Aircraft Roll Rate
+2,Accel Lat,g,Lateral Acceleration
+3,Accel Long,g,Longitudinal Acceleration
+4,Accel Vert,g,Vertical Acceleration
+5,Active Altitude Ref - FCC,,FCC Altitude Reference
+6,Aileron Actuator Pos-L,deg,Left Aileron Actuator Position
+7,Aileron Quadrant Pos,deg,Aileron Control Quadrant Position
+8,Aileron Roll Cmd-L,deg,Left FCC Aileron Roll Command
+9,Aileron-L,deg,Left Aileron Position
+10,Aileron-R,deg,Right Aileron Position
+11,Air Gnd On Gnd,,Air Ground Sensor on Ground
+12,AIR GROUND - SMYDC-1,,SMYDC 1 On Ground
+13,AIR GROUND - SMYDC-2,,SMYDC 2 On Ground
+14,Air-Ground,,Air/Ground
+15,Airspeed Comp,kts,Computed Airspeed
+16,Airspeed Max Allowable,kts,FCC Max Allowable Airspeed
+17,Airspeed Target FCC,kts,FCC Computed Airspeed Target
+18,Alt 1 Baro Corr,ft,Barometric Corrected Altitude 1
+19,Alt 2 Baro Corr,ft,Barometric Corrected Altitude 2
+20,Alt 3 Baro Corr,ft,Barometric Corrected Altitude 3
+21,Alt 4 Baro Corr,ft,Barometric Corrected Altitude 4
+22,ALT ACQ Engaged - FCC,,Altitude Acquire Autopilot Mode Engaged
+23,Alt Baro Corr Combine,ft,Combined Barometric Corrected Altitude
+24,ALT HOLD Engaged - FCC,,Altitude Hold Autopilot Mode Engaged
+25,Altitude Press,ft,Pressure Altitude
+26,Altitude Radio DEU,ft,Displayed Radio Altitude
+27,Altitude Radio-1,ft,Radio Altimeter 1
+28,Altitude Radio-2,ft,Radio Altimeter 2
+29,AP Off-FCC,,Autopilot Off
+30,AP-1 Warn,,Autopilot Warning 1
+31,AP-2 Warn,,Autopilot Warning 2
+32,APU N1,%RPM,APU Shaft Speed
+33,APU On,,APU Running
+34,APU Ready To Load,,APU Ready for Load
+35,AT FMC SPD Engaged,,Autothrottle Speed Mode Engaged
+36,CMD A-FCC,,FCCA In Command
+37,CMD A Light- FCC,,FCCA Light Active
+38,CMD B Liqht- FCC,,FCC B Light Active
+39,Ctrl Col Force Pitch CWS,lb,Combined Control Column Force
+40,Ctrl Col Force Pitch CWS Foreign,lb,Control Column Force Opposite FCC
+41,Ctrl Col Force Pitch CWS Local,lb,Control Column Force Commanding FCC
+42,Ctrl Col Pos-L,deg,Left Control Column Position
+43,Ctrl Col Pos-R,deg,Right Control Column Position
+44,Ctrl Whl Force Roll CWS,lb,Control Wheel Force
+45,Ctrl Whl Pos-L,deg,Left Control Wheel Position
+46,Ctrl Whl Pos-R,deg,Right Control Wheel Position
+47,Drift Angle-FMC,deg,Computed Drift Angle
+48,Elevator Actuator Pos-L,deg,Left Elevator Actuator Position
+49,Elevator Pitch Cmd-L,deg,Left FCC Elevator Pitch Command
+50,Elevator-L,deg,Left Elevator Position
+51,Elevator-R,deg,Right Elevator Position
+52,Eng1 Cutoff SW,,Left EngineCutoff Switch
+53,Eng1 EGT,degC,Left Engine Exhaust Gas Temperature
+54,Eng1 Fire,,Left Engine Fire Detected
+55,Eng1 FMC N1 Bug Drive,%RPM,Left Engine N1 Bug Drive
+56,Eng1 FMC N1 Target,%RPM,Left Engine N1 Target
+57,Eng1 FMV Pos,%,Left Engine Fuel Metering Valve Position
+58,Eng1 Fuel Flow,pph,Left Engine Fuel Flow
+59,Eng1 N1,%RPM,Left Engine Fan Speed
+60,Eng1 N1 Cmd,%RPM,Left Engine Fan Speed Commnad
+61,Eng1 N1 Ref,%RPM,Left Engine Reference Fan Speed
+62,Eng1 N1 Tach,%RPM,Left Engine Fan Speed Tach
+63,Eng1 N2 Actual,%RPM,Left EngineCore Speed
+64,Eng1 N2 Tach,%RPM,Left Engine Core Speed Tach
+65,Eng1 Oil Press,psi,Left EngineOil Pressure
+66,Eng1OilQty,qt,Left Engine Oil Quantity
+67,Eng1 Oil Temp,degC,Left EngineOil Temperature
+68,Eng1 TRA,deg,Left Engine Throttle Resolver Angle
+69,Eng2 Cutoff SW,,Right Engine Cutoff Switch
+70,Eng2 EGT,degC,Right Engine Exhaust Gas Temperature
+71,Eng2 Fire,,Right Engine Fire Detected
+72,Eng2 FMC N1 Bug Drive,%RPM,Right Engine N1 Bug Drive
+73,Eng2 FMC N1 Target,%RPM,Right Engine N1 Target
+74,Eng2 FMV Pos,%,Right Engine Fuel Metering Valve Position
+75,Eng2 Fuel Flow,pph,Right Engine Fuel Flow
+76,Eng2 N1,%RPM,Right Engine Fan Speed
+77,Eng2 N1 Cmd,%RPM,Right Engine Fan Speed Command
+78,Eng2 N1 Ref,%RPM,Right Engine Reference Fan Speed
+79,Eng2 N1 Tach,%RPM,Right Engine Fan Speed Tach
+80,Eng2 N2 Actual,%RPM,Right Engine Core Speed
+81,Eng2 N2 Tach,%RPM,Right Engine Core Speed Tach
+82,Eng2 Oil Press,psi,Right Engine Oil Pressure
+83,Eng2 Oil Qty,qt,Right Engine Oil Quantity
+84,Eng2 Oil Temp,degC,Right Engine Oil Temperature
+85,Eng2 TRA,deg,Right Engine Throttle Resolver Angle
+86,FAC Engage - FCC,,Final Approach Course AP Mode Engaged
+87,FCC In Command of MACH Trim - R,,Right FCC Commanding Mach Trim
+88,FCC-L In Command of MACH Trim,,Left FCC Commanding Mach Trim
+89,FD-A Switch - FCC,,Flight Director A Switch
+90,FD-B Switch - FCC,,Flight Director B Switch
+91,Flap Handle Pos,deg,Flap Handle Position
+92,Flap-L,deg,Left Flap Position
+93,Flap-R,deg,Right Flap Position
+94,FMC Selected Airspeed,kts,Selected Airspeed - FMC
+95,FMC Selected Altitude,ft,Selected Altitude - FMC
+96,FMC Selected Mach,mach,Selected Mach Number - FMC
+97,FMC Valid,,FMC Valid
+98,G/S Dev Warn-FCC,,Glideslope Deviation Warning
+99,GP Engage - FCC,,Glidepath AP Mode Engaged
+100,Ground Spd,kts,Ground Speed
+101,Groundspeed FMC,kts,Ground Speed Calculated by FMC
+102,Groundspeed Disp -L,kts,Ground Speed Displayed on Left PFD
+103,GS Engaged -FCC,,Glideslope AP Mode Engaged
+104,HDG SEL Light-FCC,,Heading Select Light Active
+105,HDG SELECT-FCC,,Heading Select AP Mode Engaged
+106,Heading,deg,Magnetic Heading
+107,Heading Selected FCC,deg,FCC Heading Selected
+108,High Speed Buffet Speed,kts,High Speed Buffet Speed
+109,Hyd Oil Press - A,psi,Hydraulic Pressure System A
+110,Hyd Oil Press - B,psi,Hydraulic Pressure System B
+111,Hyd Oil Qty - A,%,Hydraulic Oil Quantity System A
+112,Hyd Oil Qty - B,%,Hydraulic Oil Quantity System B
+113,Hydraulic Oil Pressure Standby,psi,Standby Hydraulic Pressure
+114,Hydraulic System A ELEC,,Hydraulic A Electric Pump
+115,Hydraulic System A Eng 1,,Hydraulic A Engine Pump
+116,Hydraulic System B ELEC,,Hydraulic B Electric Pump
+117,Hydraulic System B Eng 2,,Hydraulic B Engine Pump
+118,Hydraulic System Standby,,Hydraulic Standby System Engaged
+119,IAS Display - FCC,,Indicated Airspeed Displayed
+120,LNAV Engaged - FCC,,LNAV AP Mode Engaged
+121,LNAVLight-FCC,,LNAV Light Active
+122,LOC Engaged - FCC,,Localizer AP Mode Engaged
+123,LOCAL LIMITED MASTER FCC-L,,FCC Left Master
+124,LOCAL LIMITED MASTER FCC-R,,FCC Right Master
+125,LVL Change Light - FCC,,Flight Level Change AP Mode Active
+126,MACH Trim Servo Brake Status - FCC-L,,Mach Trim Servo Status
+127,N1 Light- FCC,,N1 Light Active
+128,N1 Limit Mode Cmd - FCC,,N1 Limit AT Mode Engaged
+129,Pitch Angle,deg,Aircraft Pitch Angle
+130,Roll Angle,deg,Aircraft Roll Angle
+131,Roll Rate,deg/s,Aircraft Roll Rate
+132,Rudder,deg,Rudder Position
+133,Rudder Ped Pos,deg,Rudder Pedal Position
+134,Rudder Pos- LVDT DEMOD-STBY PCU,deg,Rudder Standby PCU LVDT Position
+135,Rudder Servo Cmd-STBY PCU,deg,Rudder Standby PCU Servo Command
+136,Selected Airspeed FCC,kts,Selected Airspeed - FCC
+137,Selected Altitude FCC,ft,Selected Altitude - FCC
+138,Selected Course Foreign FCC,deg,Selected Course Foreign FCC
+139,Selected Course Local FCC,deg,Selected Course Local FCC
+140,Selected Mach FCC,mach,Selected Mach Number - FCC
+141,Selected Vertical Speed FCC,fpm,Selected Vertical Speed - FCC
+142,Single Channel - FCC,,AP on Single Channel
+143,SPD Light On - FCC,,SPD Light Active
+144,SPEED INTERVENTION ACTIVE - FCC,,Speed Intervention Active
+145,TOGA Engaged - FCC,,AT TOGA Mode Engaged
+146,Track Angle True FMC,deg,True Track Angle
+147,VISUAL ALTITUDE ALERT - FCC,,Visual Altitude Alert Active
+148,VNAV Light On - FCC,,VNAV Light Active
+149,VNAV PATH Engaged - FCC,,VNAV Path AP Mode Engaged
+150,VNAV SPD Engaged - FCC,,VNAV Spd AP Mode Engaged
+151,Wind Direction True -FMC,deg,Wind Direction
+152,Wind Speed -FMC,kts,Wind Speed
+153,Yaw Rate,deg/s,Aircraft Yaw Rate
+"Note: This FDR records pressure altitude, Whlch is based on a standard altimeter setting of 29.92 inches of mercury (in Hg). The pressure altitude information presented in the FDR plots and in the tabular data has not been corrected for the local altimeter setting at the time of the event.
+Note: Parameters with a blank unit description in table are discretes. A discrete is typically a 1-bit parameter that is either a 0 state or a 1 state where each state is uniquely defined for each parameter.",,,

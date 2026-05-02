@@ -1,0 +1,28 @@
+# Raw data files not distributed with this repository
+12minute.upk
+ExactSample.csv
+TableResolution.csv
+
+# Reports and translated recorder-report materials
+report*.pdf
+rzcommu.pdf
+res_letter_*.png
+*Recorder_Report_CN/
+
+# Locally generated matcher outputs
+generated/
+candidate_search_*.csv
+candidate_search_*.md
+
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Local editor and OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

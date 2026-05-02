@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UPK_reader&matcher</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f8;
+      --panel: #ffffff;
+      --ink: #1b1f24;
+      --muted: #66717f;
+      --line: #d9dee6;
+      --accent: #1264a3;
+      --accent-soft: #e7f1f9;
+      --good: #0d7a55;
+      --warn: #9a5b00;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+    header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-height: 64px;
+    }
+    h1 { font-size: 18px; margin: 0; white-space: nowrap; }
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(260px, 420px) minmax(440px, 340px) minmax(20px, 1fr) 128px;
+      gap: 14px;
+      align-items: center;
+      width: 100%;
+    }
+    input, select, button {
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      padding: 0 10px;
+    }
+    button {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      cursor: pointer;
+      font-weight: 600;
+    }
+    label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    label input { width: 16px; height: 16px; }
+    .switch-control {
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f9fbfd;
+      color: var(--ink);
+      font-weight: 700;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(17, 24, 39, 0.08);
+    }
+    .switch-control input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .switch-track {
+      width: 44px;
+      height: 24px;
+      border-radius: 999px;
+      background: #c7ced8;
+      position: relative;
+      transition: background 160ms ease;
+      flex: 0 0 auto;
+    }
+    .switch-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      position: absolute;
+      left: 2px;
+      top: 2px;
+      box-shadow: 0 1px 4px rgba(17, 24, 39, 0.25);
+      transition: transform 160ms ease;
+    }
+    .switch-control input:checked + .switch-track {
+      background: var(--accent);
+    }
+    .switch-control input:checked + .switch-track .switch-thumb {
+      transform: translateX(20px);
+    }
+    .key-switch {
+      border-color: #9cc3df;
+      background: var(--accent-soft);
+      height: auto;
+      min-height: 44px;
+    }
+    .key-switch-wrap {
+      min-width: 0;
+    }
+    .key-switch-wrap .switch-control {
+      width: 100%;
+      align-items: center;
+    }
+    .key-hint {
+      color: #2f4d66;
+      font-size: 11px;
+      line-height: 1.25;
+      white-space: normal;
+      max-width: none;
+      flex: 1;
+      font-weight: 600;
+    }
+    .candidate-controls {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcfd;
+    }
+    .candidate-controls .switch-control {
+      width: 100%;
+      justify-content: center;
+      height: 44px;
+      font-size: 14px;
+    }
+    .lang-switch {
+      height: 40px;
+      width: 128px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #edf1f5;
+      color: var(--ink);
+      padding: 3px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+      font-weight: 800;
+      cursor: pointer;
+      justify-self: end;
+    }
+    .lang-switch span {
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+    }
+    .lang-switch::before {
+      content: "";
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      left: 3px;
+      width: calc(50% - 3px);
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(17, 24, 39, 0.18);
+      transition: transform 160ms ease;
+    }
+    .lang-switch.zh::before {
+      transform: translateX(100%);
+    }
+    main {
+      height: 100%;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 420px 1fr;
+    }
+    aside {
+      border-right: 1px solid var(--line);
+      background: var(--panel);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      min-width: 0;
+    }
+    .meta {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .meta strong { color: var(--ink); }
+    .candidate-list { overflow: auto; flex: 1; }
+    table { border-collapse: collapse; width: 100%; font-size: 12px; }
+    th, td {
+      padding: 7px 8px;
+      border-bottom: 1px solid #edf0f4;
+      text-align: right;
+      white-space: nowrap;
+    }
+    th {
+      position: sticky;
+      top: 0;
+      background: #f9fafb;
+      color: var(--muted);
+      z-index: 1;
+      font-weight: 600;
+    }
+    th:first-child, td:first-child { text-align: left; }
+    tr { cursor: pointer; }
+    tr.selected {
+      background: var(--accent-soft);
+      outline: 2px solid #9cc3df;
+      outline-offset: -2px;
+    }
+    .tag {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #eef1f4;
+      color: var(--muted);
+      font-size: 11px;
+      margin-left: 4px;
+    }
+    .tag.timestamp { background: #e8f6ef; color: var(--good); }
+    .stage {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .plot-head {
+      padding: 14px 18px 8px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .plot-title { font-weight: 700; font-size: 17px; }
+    .plot-subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; }
+    .legend {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .legend span::before {
+      content: "";
+      display: inline-block;
+      width: 20px;
+      height: 3px;
+      margin-right: 6px;
+      vertical-align: middle;
+      border-radius: 2px;
+      background: currentColor;
+    }
+    .exact { color: #111827; }
+    .scaled { color: #1264a3; }
+    .raw-dot::before { height: 8px; width: 8px; border-radius: 50%; }
+    .canvas-wrap { min-height: 0; padding: 0 18px 12px; overflow: hidden; }
+    canvas {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: block;
+    }
+    .footer {
+      padding: 10px 18px 14px;
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      border-top: 1px solid var(--line);
+      background: var(--panel);
+    }
+    .status { color: var(--warn); font-weight: 600; }
+    @media (max-width: 980px) {
+      header { align-items: flex-start; flex-direction: column; }
+      .toolbar { grid-template-columns: 1fr auto; }
+      .key-switch-wrap { grid-column: 1 / -1; }
+      .lang-switch { justify-self: end; }
+      main { grid-template-columns: 1fr; grid-template-rows: minmax(180px, 34vh) minmax(0, 1fr); }
+      aside { border-right: 0; border-bottom: 1px solid var(--line); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>UPK_reader&matcher</h1>
+    <div class="toolbar">
+      <select id="paramSearch"></select>
+      <div class="key-switch-wrap">
+        <label class="switch-control key-switch">
+          <input id="keyOnlyToggle" type="checkbox" checked>
+          <span class="switch-track"><span class="switch-thumb"></span></span>
+          <span id="keyOnlyLabel"></span>
+          <span class="key-hint" id="keyOnlyHint"></span>
+        </label>
+      </div>
+      <div></div>
+      <button id="languageToggle" class="lang-switch" type="button" aria-label="Language">
+        <span>EN</span>
+        <span>中文</span>
+      </button>
+    </div>
+  </header>
+  <main>
+    <aside>
+      <div class="meta" id="meta"></div>
+      <div class="candidate-controls">
+        <label class="switch-control">
+          <input id="filterNegativeToggle" type="checkbox" checked>
+          <span class="switch-track"><span class="switch-thumb"></span></span>
+          <span id="filterNegativeLabel"></span>
+        </label>
+      </div>
+      <div class="candidate-list">
+        <table>
+          <thead>
+            <tr>
+              <th id="candidateHeader"></th>
+              <th>score</th>
+              <th>n</th>
+            </tr>
+          </thead>
+          <tbody id="candidateBody"></tbody>
+        </table>
+      </div>
+    </aside>
+    <section class="stage">
+      <div class="plot-head">
+        <div>
+          <div class="plot-title" id="plotTitle"></div>
+          <div class="plot-subtitle" id="plotSubtitle"></div>
+        </div>
+        <div class="legend">
+          <span class="exact">ExactSample</span>
+          <span class="scaled raw-dot">UPK raw dots</span>
+        </div>
+      </div>
+      <div class="canvas-wrap">
+        <canvas id="plot"></canvas>
+      </div>
+      <div class="footer">
+        <div id="helpText"></div>
+        <div class="status" id="status"></div>
+      </div>
+    </section>
+  </main>
+  <script>
+    const text = {
+      en: {
+        load: "Load",
+        keyOnly: "Key variables",
+        keyOnlyHint: "Refreshes the dropdown. When on, the list keeps only the most critical parameters.",
+        filterNegative: "Filter negative r",
+        loadingParams: "Loading parameters...",
+        candidateHeader: "Candidate",
+        chooseFirst: "Select a parameter to begin",
+        plotSubtitle: "UPK raw second >= 600",
+        none: "None",
+        key: "key",
+        nonKey: "non-key",
+        timestampWords: "timestamp words",
+        calculating: "Calculating candidates...",
+        candidateStatus: (total, shown) => `${total} candidates, ${shown} shown`,
+        plotting: "Plotting...",
+        noPoints: "No points to plot",
+        listStatus: n => `${n} shown`,
+        help: "Keyboard: Up/Down or J/K changes candidate, / focuses parameter.",
+        allParams: n => `${n} mapped parameters; 512 UPK words/sec.`,
+        titleSuffix: "vs",
+        fixedSubtitle: (interp, shift, n) => `${interp}, shift ${shift}, ExactSample fixed, UPK raw dots from raw stream, points ${n}`,
+      },
+      zh: {
+        load: "加载",
+        keyOnly: "筛选关键变量",
+        keyOnlyHint: "用于刷新下拉框；开启时列表仅保留最关键的参数。",
+        filterNegative: "过滤负 r",
+        loadingParams: "正在加载参数列表...",
+        candidateHeader: "候选",
+        chooseFirst: "选择参数后开始",
+        plotSubtitle: "使用 UPK raw second >= 600",
+        none: "无",
+        key: "关键",
+        nonKey: "非关键",
+        timestampWords: "timestamp words",
+        calculating: "候选计算中...",
+        candidateStatus: (total, shown) => `${total} 个候选，显示 ${shown} 个`,
+        plotting: "绘图中...",
+        noPoints: "没有可绘制点",
+        listStatus: n => `显示 ${n} 个`,
+        help: "键盘：↑/↓ 或 J/K 切换候选，/ 聚焦参数下拉框。",
+        allParams: n => `${n} 个 mapped 参数；UPK 每秒 512 个 word。`,
+        titleSuffix: "vs",
+        fixedSubtitle: (interp, shift, n) => `${interp}, shift ${shift}, ExactSample 固定显示，UPK 为 raw dots，points ${n}`,
+      }
+    };
+
+    const state = {
+      lang: "en",
+      allParams: [],
+      params: [],
+      candidates: [],
+      regularCandidates: [],
+      selected: -1,
+      currentParam: "",
+      currentCandidate: null,
+      plot: null
+    };
+
+    const el = {
+      paramSearch: document.getElementById("paramSearch"),
+      keyOnlyToggle: document.getElementById("keyOnlyToggle"),
+      filterNegativeToggle: document.getElementById("filterNegativeToggle"),
+      languageToggle: document.getElementById("languageToggle"),
+      keyOnlyLabel: document.getElementById("keyOnlyLabel"),
+      keyOnlyHint: document.getElementById("keyOnlyHint"),
+      filterNegativeLabel: document.getElementById("filterNegativeLabel"),
+      meta: document.getElementById("meta"),
+      body: document.getElementById("candidateBody"),
+      candidateHeader: document.getElementById("candidateHeader"),
+      title: document.getElementById("plotTitle"),
+      subtitle: document.getElementById("plotSubtitle"),
+      status: document.getElementById("status"),
+      helpText: document.getElementById("helpText"),
+      canvas: document.getElementById("plot")
+    };
+
+    function t() { return text[state.lang]; }
+
+    function fmt(value, digits = 3) {
+      if (value === null || value === undefined || Number.isNaN(value)) return "";
+      return Number(value).toFixed(digits);
+    }
+
+    async function api(path) {
+      const res = await fetch(path);
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error || res.statusText);
+      return data;
+    }
+
+    function applyLanguage() {
+      document.documentElement.lang = state.lang === "zh" ? "zh-CN" : "en";
+      el.keyOnlyLabel.textContent = t().keyOnly;
+      el.keyOnlyHint.textContent = t().keyOnlyHint || "\u7528\u4e8e\u5237\u65b0\u4e0b\u62c9\u6846\uff1b\u5f00\u542f\u65f6\u5217\u8868\u4ec5\u4fdd\u7559\u6700\u5173\u952e\u7684\u53c2\u6570\u3002";
+      el.filterNegativeLabel.textContent = t().filterNegative;
+      el.languageToggle.classList.toggle("zh", state.lang === "zh");
+      el.languageToggle.setAttribute("aria-label", state.lang === "zh" ? "Switch to English" : "切换到中文");
+      el.candidateHeader.textContent = t().candidateHeader;
+      el.helpText.textContent = t().help;
+      renderMeta();
+      renderCandidates();
+      if (!state.plot) {
+        el.title.textContent = t().chooseFirst;
+        el.subtitle.textContent = t().plotSubtitle;
+      } else {
+        const data = state.plot;
+        el.subtitle.textContent = t().fixedSubtitle(data.interp, data.shift, data.raw_points.length);
+      }
+    }
+
+    function selectedParamInfo() {
+      return state.allParams.find(p => p.name === state.currentParam);
+    }
+
+    function refreshParamOptions(keepCurrent = true) {
+      const current = keepCurrent ? el.paramSearch.value : "";
+      state.params = state.allParams.filter(p => !el.keyOnlyToggle.checked || p.core);
+      el.paramSearch.innerHTML = state.params
+        .map(p => `<option value="${p.name}">${p.id ? p.id + " - " : ""}${p.name}${p.units ? " " + p.units : ""}</option>`)
+        .join("");
+      const next = state.params.find(p => p.name === current) || state.params[state.params.length - 1];
+      if (next) {
+        el.paramSearch.value = next.name;
+        state.currentParam = next.name;
+      }
+    }
+
+    function renderMeta() {
+      const info = selectedParamInfo();
+      if (!info) {
+        el.meta.textContent = t().allParams(state.params.length);
+        return;
+      }
+      const words = info.timestamp_words && info.timestamp_words.length
+        ? info.timestamp_words.map(w => `${w}:W${w}`).join("; ")
+        : t().none;
+      el.meta.innerHTML = `
+        <strong>${info.name}</strong> ${info.units || ""}<br>
+        ${info.description || ""}<br>
+        ${t().timestampWords}: ${words}<br>
+        ${info.core ? t().key : t().nonKey}
+      `;
+    }
+
+    function candidateScore(row) {
+      if (row.mode === "discrete") return row.balanced_accuracy ?? row.accuracy ?? 0;
+      return Math.abs(row.r || 0);
+    }
+
+    function visibleRegularCandidates() {
+      const rows = state.candidates
+        .filter(row => row.mode === "discrete" || !el.filterNegativeToggle.checked || row.r >= 0);
+      rows.sort((a, b) =>
+        Number(!!a.constant_exact) - Number(!!b.constant_exact)
+        || candidateScore(b) - candidateScore(a)
+        || (b.n || 0) - (a.n || 0)
+      );
+      return rows;
+    }
+
+    function renderCandidates() {
+      el.body.innerHTML = "";
+      state.regularCandidates = visibleRegularCandidates();
+      state.regularCandidates.forEach((row, idx) => {
+        const tr = document.createElement("tr");
+        tr.className = idx === state.selected ? "selected" : "";
+        const score = row.mode === "discrete"
+          ? fmt(row.balanced_accuracy ?? row.accuracy, 4)
+          : fmt(row.r, 4);
+        const tags = row.mode === "discrete"
+          ? `<span class="tag">bit</span>${row.constant_exact ? '<span class="tag">constant</span>' : ""}`
+          : `<span class="tag">${row.interp}</span>`;
+        tr.innerHTML = `
+          <td>${row.label}${tags}${row.timestamp ? '<span class="tag timestamp">time</span>' : ""}<br><span class="tag">shift ${row.shift}</span></td>
+          <td>${score}</td>
+          <td>${row.n || ""}</td>
+        `;
+        tr.addEventListener("click", () => selectCandidate(idx));
+        el.body.appendChild(tr);
+      });
+      const selected = el.body.querySelector("tr.selected");
+      if (selected) selected.scrollIntoView({ block: "nearest" });
+    }
+
+    async function loadCandidates() {
+      const param = el.paramSearch.value.trim();
+      if (!param) return;
+      state.currentParam = param;
+      state.selected = -1;
+      state.regularCandidates = [];
+      renderMeta();
+      el.status.textContent = t().calculating;
+      el.body.innerHTML = "";
+      const qs = new URLSearchParams({
+        param
+      });
+      const data = await api(`/api/candidates?${qs}`);
+      state.candidates = data.rows;
+      state.regularCandidates = visibleRegularCandidates();
+      el.status.textContent = t().candidateStatus(data.count, state.regularCandidates.length);
+      renderCandidates();
+      if (state.regularCandidates.length) selectCandidate(0);
+    }
+
+    async function selectCandidate(idx) {
+      if (idx < 0 || idx >= state.regularCandidates.length) return;
+      state.selected = idx;
+      renderCandidates();
+      await plotCandidate(state.regularCandidates[idx]);
+    }
+
+    async function plotCandidate(c) {
+      state.currentCandidate = c;
+      el.status.textContent = t().plotting;
+      const qs = new URLSearchParams({
+        param: state.currentParam,
+        word: c.word,
+        shift: c.shift,
+        interp: c.interp
+      });
+      if (c.mode === "discrete") {
+        qs.set("bit", c.bit);
+        qs.set("inverted", c.inverted ? "1" : "0");
+      }
+      const data = await api(`/api/plot?${qs}`);
+      state.plot = data;
+      drawPlot();
+      el.title.textContent = `${state.currentParam} ${t().titleSuffix} ${data.label}`;
+      el.subtitle.textContent = t().fixedSubtitle(data.interp, data.shift, data.raw_points.length);
+      el.status.textContent = "";
+    }
+
+    function drawPlot() {
+      const canvas = el.canvas;
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.max(300, Math.floor(rect.width * dpr));
+      canvas.height = Math.max(240, Math.floor(rect.height * dpr));
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const w = rect.width;
+      const h = rect.height;
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, w, h);
+      const exactPts = state.plot ? state.plot.exact_points : [];
+      const rawPts = state.plot ? state.plot.raw_points : [];
+      const pad = { l: 58, r: 58, t: 24, b: 42 };
+      const innerW = w - pad.l - pad.r;
+      const innerH = h - pad.t - pad.b;
+      ctx.strokeStyle = "#d9dee6";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(pad.l, pad.t, innerW, innerH);
+      if (!exactPts.length && !rawPts.length) {
+        ctx.fillStyle = "#66717f";
+        ctx.font = "14px Segoe UI, Arial";
+        ctx.fillText(t().noPoints, pad.l + 16, pad.t + 28);
+        return;
+      }
+      const xs = exactPts.concat(rawPts).map(p => p.x);
+      const exactYs = exactPts.map(p => p.y).filter(Number.isFinite);
+      const rawYs = rawPts.map(p => p.y).filter(Number.isFinite);
+      let minX = Math.min(...xs), maxX = Math.max(...xs);
+      let minExactY = exactYs.length ? Math.min(...exactYs) : 0;
+      let maxExactY = exactYs.length ? Math.max(...exactYs) : 1;
+      let minRawY = rawYs.length ? Math.min(...rawYs) : 0;
+      let maxRawY = rawYs.length ? Math.max(...rawYs) : 1;
+      if (minX === maxX) maxX = minX + 1;
+      if (minExactY === maxExactY) maxExactY = minExactY + 1;
+      if (minRawY === maxRawY) maxRawY = minRawY + 1;
+      const exactPad = (maxExactY - minExactY) * 0.08 || 1;
+      const rawPad = (maxRawY - minRawY) * 0.08 || 1;
+      minExactY -= exactPad;
+      maxExactY += exactPad;
+      minRawY -= rawPad;
+      maxRawY += rawPad;
+      const sx = x => pad.l + (x - minX) / (maxX - minX) * innerW;
+      const syExact = y => pad.t + innerH - (y - minExactY) / (maxExactY - minExactY) * innerH;
+      const syRaw = y => pad.t + innerH - (y - minRawY) / (maxRawY - minRawY) * innerH;
+      ctx.font = "12px Segoe UI, Arial";
+      ctx.fillStyle = "#66717f";
+      ctx.strokeStyle = "#edf0f4";
+      for (let i = 0; i <= 4; i++) {
+        const y = pad.t + innerH * i / 4;
+        ctx.beginPath();
+        ctx.moveTo(pad.l, y);
+        ctx.lineTo(pad.l + innerW, y);
+        ctx.stroke();
+        const label = maxExactY - (maxExactY - minExactY) * i / 4;
+        ctx.fillText(fmt(label, 2), 8, y + 4);
+        const rawLabel = maxRawY - (maxRawY - minRawY) * i / 4;
+        ctx.fillStyle = "#1264a3";
+        ctx.fillText(fmt(rawLabel, 0), pad.l + innerW + 8, y + 4);
+        ctx.fillStyle = "#66717f";
+      }
+      for (let i = 0; i <= 5; i++) {
+        const x = pad.l + innerW * i / 5;
+        const label = minX + (maxX - minX) * i / 5;
+        ctx.fillText(fmt(label, 1), x - 14, pad.t + innerH + 24);
+      }
+      function line(points, color, width, yScale) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.beginPath();
+        let started = false;
+        points.forEach(p => {
+          const val = p.y;
+          if (!Number.isFinite(val)) return;
+          const x = sx(p.x);
+          const y = yScale(val);
+          if (!started) {
+            ctx.moveTo(x, y);
+            started = true;
+          } else {
+            ctx.lineTo(x, y);
+          }
+        });
+        ctx.stroke();
+      }
+      line(exactPts, "#111827", 2, syExact);
+      ctx.fillStyle = "#1264a3";
+      rawPts.forEach(p => {
+        if (!Number.isFinite(p.y)) return;
+        ctx.beginPath();
+        ctx.arc(sx(p.x), syRaw(p.y), 3.2, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.fillStyle = "#66717f";
+      ctx.fillText("UPK second", pad.l + innerW / 2 - 32, h - 12);
+      ctx.fillStyle = "#111827";
+      ctx.fillText("Exact", 10, pad.t - 7);
+      ctx.fillStyle = "#1264a3";
+      ctx.fillText("Raw", pad.l + innerW + 8, pad.t - 7);
+    }
+
+    async function init() {
+      el.meta.textContent = t().loadingParams;
+      const data = await api("/api/params");
+      state.allParams = data.params;
+      refreshParamOptions(false);
+      applyLanguage();
+      await loadCandidates();
+    }
+
+    el.keyOnlyToggle.addEventListener("change", () => {
+      refreshParamOptions(true);
+      loadCandidates().catch(err => el.status.textContent = err.message);
+    });
+    el.filterNegativeToggle.addEventListener("change", () => {
+      state.selected = -1;
+      renderCandidates();
+      el.status.textContent = t().listStatus(state.regularCandidates.length);
+      if (state.regularCandidates.length) selectCandidate(0);
+    });
+    el.languageToggle.addEventListener("click", () => {
+      state.lang = state.lang === "en" ? "zh" : "en";
+      applyLanguage();
+    });
+    el.paramSearch.addEventListener("change", () => loadCandidates().catch(err => el.status.textContent = err.message));
+    window.addEventListener("keydown", event => {
+      if (event.key === "/" && document.activeElement !== el.paramSearch) {
+        event.preventDefault();
+        el.paramSearch.focus();
+        return;
+      }
+      if (event.key === "ArrowDown" || event.key.toLowerCase() === "j") {
+        event.preventDefault();
+        selectCandidate(Math.min(state.regularCandidates.length - 1, state.selected + 1));
+      }
+      if (event.key === "ArrowUp" || event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        selectCandidate(Math.max(0, state.selected - 1));
+      }
+    });
+    window.addEventListener("resize", () => drawPlot());
+    init().catch(err => el.status.textContent = err.message);
+  </script>
+</body>
+</html>
